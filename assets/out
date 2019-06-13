@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+SRC_DIR=$1
+echo $SRC_DIR 1>&2
+echo $BUILD_ID 1>&2
+echo $BUILD_NAME 1>&2
+echo $BUILD_JOB_NAME 1>&2
+echo $BUILD_PIPELINE_NAME 1>&2
+echo $ATC_EXTERNAL_URL 1>&2
+
+PLATFORM=`uname`
+
+MAX_RETRIES=10
+SLEEP_TIME=10
+
+SCRIPT_INPUT='/tmp/input'
+cat > $SCRIPT_INPUT <&0 # STDIN params
+
+SNAPCRAFT_YAML=$(jq -r '.params.snapcraft_yaml' < $SCRIPT_INPUT)
+OUTPUT_DIR=$(jq -r '.params.output_dir' < $SCRIPT_INPUT)
+PUSH=$(jq -r '.params.push' < $SCRIPT_INPUT)
+REVISION=$(jq -r '.params.revision' < $SCRIPT_INPUT)
+
+echo $SNAPCRAFT_YAML
+echo $OUTPUT_DIR
+echo $PUSH
+echo $REVISION
+
+mkdir -p /tmp/snap
+cp $SNAPCRAFT_YAML /tmp/snap/snapcraft.yaml
+cd /tmp
+snapcraft
+
+if [[ $PUSH && $REVISION ]]; then
+  echo "pushing"
+fi
+
+cp /tmp/*.snap $OUTPUT_DIR
+
+exit 0

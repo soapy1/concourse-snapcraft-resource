@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e -x
+
+SCRIPT_INPUT='/tmp/input'
+cat > $SCRIPT_INPUT <&0 # STDIN params
+
+NAME=$(jq -r '.source.name' < $SCRIPT_INPUT)
+
+echo $NAME 1>&2
+snap download $NAME
+
+exit $?

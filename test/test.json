@@ -1,0 +1,11 @@
+{
+  "params": {
+    "snapcraft_yaml": "../test/test_snapcraft.yaml",
+    "push": "/sync/dir",
+    "revision": "user",
+    "output_dir": "test"
+  },
+  "source": {
+    "name": "test_snap"
+  }
+}
